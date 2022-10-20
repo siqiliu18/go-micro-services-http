@@ -1,0 +1,36 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name:  chat-service-client
+spec:
+  selector:
+    app:  chat-client
+  type:  NodePort
+  ports:
+  - port:  8889
+    targetPort:  9001
+    nodePort: 30010
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chat-client-deployment
+  labels:
+    app: chat-client
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: chat-client
+  template:
+    metadata:
+      labels:
+        # editor: vscode
+        app: chat-client
+    spec:
+      containers:
+      - name: chat-client-pod
+        image: chat-client-image
+        imagePullPolicy: Never
+        ports:
+          - containerPort: 9001
